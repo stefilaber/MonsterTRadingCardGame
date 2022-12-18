@@ -2,6 +2,7 @@ package org.example.application.user.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.application.user.model.Session;
 import org.example.application.user.model.User;
 import org.example.application.user.repository.UserRepository;
 import org.example.server.dto.Request;
@@ -9,22 +10,18 @@ import org.example.server.dto.Response;
 import org.example.server.http.ContentType;
 import org.example.server.http.Method;
 import org.example.server.http.StatusCode;
+import org.example.application.user.model.Session;
 
-public class UserController {
+public class SessionController {
 
     private final UserRepository userRepository;
-
-    public UserController(UserRepository userRepository) {
+    public SessionController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
     public Response handle(Request request) {
+
         if (request.getMethod().equals(Method.POST.method)) {
             return create(request);
-        }
-
-        if (request.getMethod().equals(Method.GET.method)) {
-            return readAll();
         }
 
         Response response = new Response();
@@ -34,24 +31,6 @@ public class UserController {
 
         return response;
     }
-
-    private Response readAll() {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        Response response = new Response();
-        response.setStatusCode(StatusCode.OK);
-        response.setContentType(ContentType.APPLICATION_JSON);
-        String content;
-        try {
-            content = objectMapper.writeValueAsString(userRepository.findAll());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        response.setContent(content);
-
-        return response;
-    }
-
 
     private Response create(Request request) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -64,10 +43,7 @@ public class UserController {
             throw new RuntimeException(e);
         }
 
-        System.out.println(user.getUsername());
-        System.out.println(user.getPassword());
-
-        user = userRepository.save(user);
+        user = userRepository.login(user);
 
         Response response = new Response();
         response.setStatusCode(StatusCode.CREATED);
@@ -75,10 +51,14 @@ public class UserController {
         String content;
         try {
             if(user == null) {
-                content = objectMapper.writeValueAsString("Error: username already exists!");
+                content = objectMapper.writeValueAsString("Error: wrong credentials!");
             }
             else {
-                content = objectMapper.writeValueAsString(user);
+                Session session = new Session();
+                session.setToken(user.getUsername());
+                // TODO: add the new session to the sessions table
+                content = objectMapper.writeValueAsString(session);
+                //content = objectMapper.writeValueAsString(session.createToken(user.getUsername()));
             }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

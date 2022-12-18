@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="swe1db@localhost" uuid="94de7e23-3e04-4d85-8792-f80fddec31e1">
+    <data-source source="LOCAL" name="swe1db@localhost" uuid="5ff56635-c0a7-4df8-84e5-4184f4b3eb0d">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
+      <remarks>Database for SWEN1</remarks>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:5432/swe1db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>

@@ -13,4 +13,6 @@ public interface UserRepository {
     User save(User user);
 
     User delete(User user);
+
+    User login(User user);
 }

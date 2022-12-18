@@ -1,20 +1,20 @@
 package org.example;
 
-import org.example.application.user.UserApp;
+import org.example.application.user.MTCGApp;
+import org.example.server.DatabaseInitializer;
 import org.example.server.Server;
-
-import java.io.IOException;
 
 public class Main {
 
     public static void main(String[] args) {
-        Server server = new Server(new UserApp());
+
+        Server server = new Server(new MTCGApp());
         try {
+            DatabaseInitializer.initialize();
             server.start();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
-
 
