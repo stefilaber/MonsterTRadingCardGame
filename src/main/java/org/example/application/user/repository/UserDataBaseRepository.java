@@ -96,11 +96,27 @@ public class UserDataBaseRepository implements UserRepository {
 
     @Override
     public User delete(User user) {
-        if (this.users.contains(user)) {
-            this.users.remove(user);
-        }
 
-        return user;
+        // check if the user really exists:
+        User LookForUser = findByUsername(user.getUsername());
+
+        if (LookForUser != null){
+            // delete user
+            String DeleteUser = "DELETE FROM users WHERE username = ? AND password = ?";
+
+            try(PreparedStatement ps2 = conn.prepareStatement(DeleteUser)) {
+                ps2.setString(1, user.getUsername());
+                ps2.setString(2, user.getPassword());
+                ps2.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+            return user;
+        }
+        else{
+            return null;
+        }
     }
 
     public User login(User user){

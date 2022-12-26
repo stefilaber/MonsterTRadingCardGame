@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.application.user.model.Session;
 import org.example.application.user.model.User;
+import org.example.application.user.repository.SessionRepository;
 import org.example.application.user.repository.UserRepository;
 import org.example.server.dto.Request;
 import org.example.server.dto.Response;
@@ -15,9 +16,12 @@ import org.example.application.user.model.Session;
 public class SessionController {
 
     private final UserRepository userRepository;
-    public SessionController(UserRepository userRepository) {
+    private final SessionRepository sessionRepository;
+    public SessionController(UserRepository userRepository, SessionRepository sessionRepository) {
         this.userRepository = userRepository;
+        this.sessionRepository = sessionRepository;
     }
+
     public Response handle(Request request) {
 
         if (request.getMethod().equals(Method.POST.method)) {
@@ -55,10 +59,12 @@ public class SessionController {
             }
             else {
                 Session session = new Session();
+                session.setUsername(user.getUsername());
                 session.setToken(user.getUsername());
-                // TODO: add the new session to the sessions table
                 content = objectMapper.writeValueAsString(session);
-                //content = objectMapper.writeValueAsString(session.createToken(user.getUsername()));
+                // adding the new session to the sessions table
+                sessionRepository.save(session);
+
             }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

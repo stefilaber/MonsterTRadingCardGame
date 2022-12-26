@@ -31,7 +31,8 @@ public class RequestBuilder {
         // Content
         request.setContent(HttpRegex.findContent(requestString));
 
-        // TODO: Add additional information to the request
+        // Authorization
+        request.setAuthorization(HttpRegex.findHeaderAsString(requestString, "Authorization"));
 
         return request;
     }

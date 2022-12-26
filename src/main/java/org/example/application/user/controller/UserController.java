@@ -10,6 +10,8 @@ import org.example.server.http.ContentType;
 import org.example.server.http.Method;
 import org.example.server.http.StatusCode;
 
+import java.util.Objects;
+
 public class UserController {
 
     private final UserRepository userRepository;
@@ -64,9 +66,6 @@ public class UserController {
             throw new RuntimeException(e);
         }
 
-        System.out.println(user.getUsername());
-        System.out.println(user.getPassword());
-
         user = userRepository.save(user);
 
         Response response = new Response();
@@ -74,12 +73,7 @@ public class UserController {
         response.setContentType(ContentType.APPLICATION_JSON);
         String content;
         try {
-            if(user == null) {
-                content = objectMapper.writeValueAsString("Error: username already exists!");
-            }
-            else {
-                content = objectMapper.writeValueAsString(user);
-            }
+            content = objectMapper.writeValueAsString(Objects.requireNonNullElse(user, "Error: username already exists!"));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

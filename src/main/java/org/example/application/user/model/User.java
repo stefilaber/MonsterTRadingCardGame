@@ -2,14 +2,15 @@ package org.example.application.user.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.util.ArrayList;
+
 @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
 public class User {
 
     private String username;
-
     private String password;
+    private ArrayList<Card> stack;
 
-    //private String id= "asuo";
 
     public User() {
     }

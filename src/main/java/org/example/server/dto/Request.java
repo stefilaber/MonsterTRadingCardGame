@@ -4,12 +4,11 @@ public class Request {
 
     private String method;
     private String path;
-
     private String contentType;
     private int contentLength;
     private String content;
-
     private String request;
+    private String authorization;
 
     public String getMethod() {
         return method;
@@ -57,6 +56,14 @@ public class Request {
 
     public void setRequest(String request) {
         this.request = request;
+    }
+
+    public void setAuthorization(String authorization) {
+        this.authorization = authorization;
+    }
+
+    public String getAuthorization() {
+        return authorization;
     }
 
     @Override
