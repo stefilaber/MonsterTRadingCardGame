@@ -22,9 +22,14 @@ public class DatabaseInitializer {
         stmt1.execute(
                 """
                     CREATE TABLE IF NOT EXISTS users (
-                        id int PRIMARY KEY,
-                        username VARCHAR(255),
-                        password VARCHAR(255) NOT NULL
+                        username VARCHAR(255) PRIMARY KEY,
+                        password VARCHAR(255) NOT NULL,
+                        coins int,
+                        bio VARCHAR(255),
+                        image VARCHAR(255),
+                        elo int,
+                        bio int,
+                        image int
                     );
                     """
         );
@@ -34,8 +39,7 @@ public class DatabaseInitializer {
         stmt3.execute(
                 """
                     CREATE TABLE IF NOT EXISTS sessions (
-                        id int PRIMARY KEY,
-                        username VARCHAR(255),
+                        username VARCHAR(255) PRIMARY KEY,
                         token VARCHAR(255) NOT NULL
                     );
                     """
@@ -47,9 +51,10 @@ public class DatabaseInitializer {
                 """
                     CREATE TABLE IF NOT EXISTS cards (
                         id uuid PRIMARY KEY,
-                        cardName VARCHAR(255) NOT NULL,
+                        cardname VARCHAR(255) NOT NULL,
                         damage int,
-                        cardType VARCHAR(255) NOT NULL
+                        cardType VARCHAR(255) NOT NULL,
+                        username VARCHAR(255)
                     );
                     """
         );
@@ -59,17 +64,31 @@ public class DatabaseInitializer {
         stmt5.execute(
                 """
                     CREATE TABLE IF NOT EXISTS packages (
-                        id int PRIMARY KEY,
-                        username VARCHAR(255),
-                        card1 uuid,
-                        card2 uuid,
-                        card3 uuid,
-                        card4 uuid,
-                        card5 uuid
+                        id serial,
+                        card1 VARCHAR(255),
+                        card2 VARCHAR(255),
+                        card3 VARCHAR(255),
+                        card4 VARCHAR(255),
+                        card5 VARCHAR(255)
                     );
                     """
         );
         stmt5.close();
+
+        Statement stmt6 = conn.createStatement();
+        stmt6.execute(
+                """
+                    CREATE TABLE IF NOT EXISTS decks (
+                        id serial,
+                        username VARCHAR(255),
+                        card1 VARCHAR(255),
+                        card2 VARCHAR(255),
+                        card3 VARCHAR(255),
+                        card4 VARCHAR(255)
+                    );
+                    """
+        );
+        stmt6.close();
 
     }
 

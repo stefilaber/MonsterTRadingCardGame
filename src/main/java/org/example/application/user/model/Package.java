@@ -2,11 +2,10 @@ package org.example.application.user.model;
 
 public class Package {
 
-    private String username;
+    private int id;
     private String card1, card2, card3, card4, card5;
 
-    public Package(String username, String cardID1, String cardID2, String cardID3, String cardID4, String cardID5) {
-        this.username = username;
+    public Package(String cardID1, String cardID2, String cardID3, String cardID4, String cardID5) {
         this.card1 = cardID1;
         this.card2 = cardID2;
         this.card3 = cardID3;
@@ -18,12 +17,10 @@ public class Package {
 
     }
 
-    public String getUsername() {
-        return username;
-    }
+    public int getId() { return id; }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getCard1() {

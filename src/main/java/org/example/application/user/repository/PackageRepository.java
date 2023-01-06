@@ -13,5 +13,9 @@ public interface PackageRepository {
 
     Package save(Package cardspackage);
 
-    Package delete();
+    Package acquire(String username);
+
+    int deleteById(int id);
+
+    Package getFirstAvailablePackage();
 }

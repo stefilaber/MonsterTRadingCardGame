@@ -1,5 +1,6 @@
 package org.example.application.user.repository;
 
+import org.example.application.user.model.StatsVO;
 import org.example.application.user.model.User;
 
 import java.util.List;
@@ -15,4 +16,11 @@ public interface UserRepository {
     User delete(User user);
 
     User login(User user);
+
+    boolean payForPackage(String username);
+
+    User updateUser(String username, String name, String bio, String image);
+
+    List<StatsVO> getScoreboard();
+
 }

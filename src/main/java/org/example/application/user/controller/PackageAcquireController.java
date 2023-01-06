@@ -7,31 +7,30 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.example.application.user.model.Card;
 import org.example.application.user.model.Package;
 import org.example.application.user.model.Session;
-import org.example.application.user.model.User;
 import org.example.application.user.repository.CardRepository;
 import org.example.application.user.repository.PackageRepository;
 import org.example.application.user.repository.SessionRepository;
+import org.example.application.user.repository.UserRepository;
 import org.example.server.dto.Request;
 import org.example.server.dto.Response;
 import org.example.server.http.ContentType;
 import org.example.server.http.Method;
 import org.example.server.http.StatusCode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-public class PackageController {
-
+public class PackageAcquireController {
     private final SessionRepository sessionRepository;
     private final PackageRepository packageRepository;
     private final CardRepository cardRepository;
 
-    public PackageController(SessionRepository sessionRepository, PackageRepository packageRepository, CardRepository cardRepository) {
+    private final UserRepository userRepository;
+
+    public PackageAcquireController(SessionRepository sessionRepository, PackageRepository packageRepository, CardRepository cardRepository, UserRepository userRepository) {
         this.sessionRepository = sessionRepository;
         this.packageRepository = packageRepository;
         this.cardRepository = cardRepository;
+        this.userRepository = userRepository;
     }
 
     public Response handle(Request request) {
@@ -73,17 +72,7 @@ public class PackageController {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        String json = request.getContent();
         String authorization = request.getAuthorization();
-
-        Card[] cards;
-        try {
-            ObjectMapper mapper = JsonMapper.builder().enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS).build();
-            cards = mapper.readValue(json, Card[].class);
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
 
         Response response = new Response();
         response.setStatusCode(StatusCode.CREATED);
@@ -100,17 +89,27 @@ public class PackageController {
             //if the session exists:
             if (session != null){
 
-                //save all the cards in the database and their ids in an array:
-                for (Card card: cards)
-                {
-                    cardRepository.save(card);
+                Package cardPackage = packageRepository.getFirstAvailablePackage();
+                //checking if any packages are available
+                if(cardPackage != null) {
+
+                    //checking if there are at least 5 coins to pay for the package
+                    if(userRepository.payForPackage(session.getUsername())){
+                    // giving the cards to the user by saving the username in the card entries:
+                    cardRepository.appendUsername(cardPackage.getCard1(), session.getUsername());
+                    cardRepository.appendUsername(cardPackage.getCard2(), session.getUsername());
+                    cardRepository.appendUsername(cardPackage.getCard3(), session.getUsername());
+                    cardRepository.appendUsername(cardPackage.getCard4(), session.getUsername());
+                    cardRepository.appendUsername(cardPackage.getCard5(), session.getUsername());
+
+                    //deleting the card package from the database
+                    packageRepository.deleteById(cardPackage.getId());
+
+                    content = objectMapper.writeValueAsString(cardPackage);
+                    }
+                    else content = "Error: not enough money";
                 }
-
-                //save the package
-                Package cardPackage = new Package(cards[0].getId(), cards[1].getId(), cards[2].getId(), cards[3].getId(), cards[4].getId());
-                packageRepository.save(cardPackage);
-
-                content = objectMapper.writeValueAsString(cardPackage);
+                else content = "Error: no package available";
             }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

@@ -11,16 +11,25 @@ public class Card {
     private int damage;
     private CardType cardType;
 
-    public Card(String id, String name, int damage, String cardType) {
+    private String username;
+
+    public Card(String id, String name, int damage, String cardType, String username) {
 
         this.Id = id;
         this.cardType = CardType.valueOf(cardType);
         this.name = name;
         this.damage = damage;
+        this.username = username;
     }
 
     public Card() {
 
+    }
+
+    public String getUsername(){ return username; }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getId() {

@@ -6,16 +6,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
 public enum CardType {
 
-    MONSTER("monster"),
-    SPELL("spell")
-    ;
-
-    private final String name;
-    CardType(String name){
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
+    MONSTER,
+    SPELL
 }
