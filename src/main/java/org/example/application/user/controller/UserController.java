@@ -132,7 +132,10 @@ public class UserController {
         response.setContentType(ContentType.APPLICATION_JSON);
         String content;
         try {
-            content = objectMapper.writeValueAsString(Objects.requireNonNullElse(user, "Error: username already exists!"));
+            content = objectMapper.writeValueAsString(Objects.requireNonNullElse(user, "User with same username already registered"));
+            if(user == null){
+                response.setStatusCode(StatusCode.CONFLICT);
+            }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

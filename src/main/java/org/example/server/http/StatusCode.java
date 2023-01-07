@@ -8,6 +8,7 @@ public enum StatusCode {
     FORBIDDEN(403, "Forbidden"),
     NOT_FOUND(404, "Not Found"),
     METHODE_NOT_ALLOWED(405, "Method Not Allowed"),
+    CONFLICT(409, "Conflict"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error")
     ;
 

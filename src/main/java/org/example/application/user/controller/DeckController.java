@@ -23,7 +23,6 @@ public class DeckController {
 
     SessionRepository sessionRepository;
     DeckRepository deckRepository;
-
     CardRepository cardRepository;
     public DeckController(SessionRepository sessionRepository, DeckRepository deckRepository, CardRepository cardRepository) {
         this.deckRepository = deckRepository;
@@ -45,7 +44,7 @@ public class DeckController {
                 Response response = new Response();
                 response.setStatusCode(StatusCode.UNAUTHORIZED);
                 response.setContentType(ContentType.TEXT_PLAIN);
-                response.setContent(StatusCode.UNAUTHORIZED.message);
+                response.setContent("Access token is missing or invalid");
 
                 return response;
             }

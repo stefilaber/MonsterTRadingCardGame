@@ -36,7 +36,17 @@ public class PackageAcquireController {
     public Response handle(Request request) {
 
         if (request.getMethod().equals(Method.POST.method)) {
-            return create(request);
+            //String username = sessionRepository.findByToken(request.getAuthorization()).getUsername();
+            if(request.getAuthorization() != null) {
+                return create(request);
+            }
+            else{
+                Response response = new Response();
+                response.setStatusCode(StatusCode.UNAUTHORIZED);
+                response.setContentType(ContentType.TEXT_PLAIN);
+                response.setContent("Access token is missing or invalid");
+                return response;
+            }
         }
 
         if (request.getMethod().equals(Method.GET.method)) {
@@ -75,7 +85,7 @@ public class PackageAcquireController {
         String authorization = request.getAuthorization();
 
         Response response = new Response();
-        response.setStatusCode(StatusCode.CREATED);
+        response.setStatusCode(StatusCode.OK);
         response.setContentType(ContentType.APPLICATION_JSON);
 
         Session session;
@@ -107,9 +117,15 @@ public class PackageAcquireController {
 
                     content = objectMapper.writeValueAsString(cardPackage);
                     }
-                    else content = "Error: not enough money";
+                    else {
+                        response.setStatusCode(StatusCode.FORBIDDEN);
+                        content = "Error: not enough money";
+                    }
                 }
-                else content = "Error: no package available";
+                else{
+                    response.setStatusCode(StatusCode.NOT_FOUND);
+                    content = "Error: no package available";
+                }
             }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

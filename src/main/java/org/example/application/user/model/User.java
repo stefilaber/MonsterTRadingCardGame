@@ -39,6 +39,18 @@ public class User {
         this.image = image;
     }
 
+    public User(String username, String password, int coins, String name, String bio, String image, int elo, int wins, int losses) {
+        this.username = username;
+        this.password = password;
+        this.coins = coins;
+        this.name = name;
+        this.bio = bio;
+        this.image = image;
+        this.elo = elo;
+        this.wins = wins;
+        this.losses = losses;
+    }
+
     public String getUsername() {
         return username;
     }

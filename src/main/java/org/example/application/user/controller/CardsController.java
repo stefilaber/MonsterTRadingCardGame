@@ -30,10 +30,6 @@ public class CardsController {
 
     public Response handle(Request request) {
 
-//        if (request.getMethod().equals(Method.POST.method)) {
-//            return create(request);
-//        }
-
         if (request.getMethod().equals(Method.GET.method)) {
             if(request.getAuthorization() != null)
                 return readAllByUsername(sessionRepository.findByToken(request.getAuthorization()).getUsername());
@@ -74,54 +70,4 @@ public class CardsController {
         return response;
     }
 
-//    private Response create(Request request) {
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        String json = request.getContent();
-//        String authorization = request.getAuthorization();
-//
-//        try {
-//            ObjectMapper mapper = JsonMapper.builder().enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS).build();
-//            cards = mapper.readValue(json, Card[].class);
-//
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        Response response = new Response();
-//        response.setStatusCode(StatusCode.CREATED);
-//        response.setContentType(ContentType.APPLICATION_JSON);
-//
-//        Session session;
-//        //checking if session exists:
-//        session = sessionRepository.findByToken(authorization);
-//
-//        String content;
-//
-//        try {
-//            content = objectMapper.writeValueAsString(Objects.requireNonNullElse(session, "Error: not logged in!"));
-//            //if the session exists:
-//            if (session != null){
-//
-//                //save all the cards in the database and their ids in an array:
-//                for (Card card: cards)
-//                {
-//                    cardRepository.save(card);
-//                }
-//
-//                //save the package
-//                String username = sessionRepository.findByToken(authorization).getUsername();
-//                Package cardPackage = new Package(cards[0].getId(), cards[1].getId(), cards[2].getId(), cards[3].getId(), cards[4].getId());
-//                packageRepository.save(cardPackage);
-//
-//                content = objectMapper.writeValueAsString(cardPackage);
-//            }
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//        response.setContent(content);
-//
-//        return response;
-//    }
 }

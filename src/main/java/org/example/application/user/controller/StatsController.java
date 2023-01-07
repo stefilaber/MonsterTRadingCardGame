@@ -60,7 +60,7 @@ public class StatsController {
         try {
             User user = userRepository.findByUsername(username);
             content = objectMapper.writeValueAsString(new StatsVO(user.getName(), user.getElo(),user.getWins(), user.getLosses()));
-            if(content == null){
+            if(user == null){
                 response.setStatusCode(StatusCode.NOT_FOUND);
                 response.setContent("User not found");
             }

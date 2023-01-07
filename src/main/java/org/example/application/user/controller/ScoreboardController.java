@@ -28,9 +28,8 @@ public class ScoreboardController {
 
         if (request.getMethod().equals(Method.GET.method)) {
 
-            String username = sessionRepository.findByToken(request.getAuthorization()).getUsername();
             if(request.getAuthorization() != null) {
-                return readScoreboard(username);
+                return readScoreboard();
             }
             else{
                 Response response = new Response();
@@ -49,7 +48,7 @@ public class ScoreboardController {
         return response;
     }
 
-    private Response readScoreboard(String username) {
+    private Response readScoreboard() {
 
         ObjectMapper objectMapper = new ObjectMapper();
 

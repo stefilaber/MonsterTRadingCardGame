@@ -67,7 +67,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testReadUserFail(){
+    public void testReadUserInvalidToken(){
         //Arrange
         userController = new UserController(userRepository, sessionRepository);
 
@@ -94,7 +94,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testCreate(){
+    public void testCreateSuccessfully(){
         //Arrange
         userController = new UserController(userRepository, sessionRepository);
 
@@ -104,13 +104,13 @@ class UserControllerTest {
         user.setUsername(username);
         user.setPassword(password);
 
-        when(userRepository.save(user)).thenReturn(user);
-
         Request request = new Request();
         request.setMethod("POST");
         request.setPath("/users");
-        request.setContent("{\"Username\":\"kienboec\", \"Password\":\"daniel\"}");
+        request.setContent("{\"Username\":\"test\", \"Password\":\"testpw\"}");
         request.setContentLength(request.getContent().length());
+
+        when(userRepository.save(any())).thenReturn(user);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -119,10 +119,101 @@ class UserControllerTest {
 
         //Assert
         assertEquals(StatusCode.CREATED.code, response.getStatus());
+        try{
+            assertEquals(response.getContent(), objectMapper.writeValueAsString(user));
+        } catch (JsonProcessingException e) {
+            fail(e);
+        }
+
+    }
+
+    @Test
+    public void testCreateUserAlreadyExists(){
+        //Arrange
+        userController = new UserController(userRepository, sessionRepository);
+
+        String username = "test";
+        String password = "testpw";
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+
+        lenient().when(userRepository.save(user)).thenReturn(null);
+
+        Request request = new Request();
+        request.setMethod("POST");
+        request.setPath("/users");
+        request.setContent("{\"Username\":\"test\", \"Password\":\"testpw\"}");
+        request.setContentLength(request.getContent().length());
+
+        //Act
+        Response response = userController.handle(request);
+
+        //Assert
+        assertEquals(StatusCode.CONFLICT.code, response.getStatus());
+        assertEquals(response.getContent(), "\"User with same username already registered\"");
+    }
+
+    @Test
+    public void testChangeData(){
+        //Arrange
+        userController = new UserController(userRepository, sessionRepository);
+
+        String username = "test";
+        String password = "testpw";
+        String token = "Basic test-mtcgToken";
+        User user = new User(username, password, 20, "Test", "me playin...", ":-)");
+        Session session = new Session(username, token);
+
+        Request request = new Request();
+        request.setMethod("PUT");
+        request.setPath("/users/" +username);
+        request.setContent("{\"Name\": \"Test\",  \"Bio\": \"me playin...\", \"Image\": \":-)\"}");
+        request.setContentLength(request.getContent().length());
+
+        when(sessionRepository.findByToken(request.getAuthorization())).thenReturn(session);
+        when(userRepository.updateUser(username, user.getName(), user.getBio(), user.getImage())).thenReturn(user);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        //Act
+        Response response = userController.handle(request);
+
+        //Assert
+        assertEquals(StatusCode.OK.code, response.getStatus());
         try {
             assertEquals(response.getContent(), objectMapper.writeValueAsString(user));
         } catch (JsonProcessingException e) {
             fail(e);
         }
+
+    }
+
+    @Test
+    public void testChangeDataInvalidToken(){ //invalid token
+        //Arrange
+        userController = new UserController(userRepository, sessionRepository);
+
+        String username = "test";
+        String password = "testpw";
+        String token = "Basic test-mtcgToken";
+        User user = new User(username, password, 20, "Test", "me playin...", ":-)");
+        Session session = new Session(username, token);
+
+        Request request = new Request();
+        request.setMethod("PUT");
+        request.setPath("/users/notTest");
+        request.setContent("{\"Name\": \"Test\",  \"Bio\": \"me playin...\", \"Image\": \":-)\"}");
+        request.setContentLength(request.getContent().length());
+
+        when(sessionRepository.findByToken(request.getAuthorization())).thenReturn(session);
+
+        //Act
+        Response response = userController.handle(request);
+
+        //Assert
+        assertEquals(StatusCode.UNAUTHORIZED.code, response.getStatus());
+        assertEquals(response.getContent(), "Access token is missing or invalid");
+
     }
 }

@@ -50,11 +50,12 @@ public class SessionController {
         user = userRepository.login(user);
 
         Response response = new Response();
-        response.setStatusCode(StatusCode.CREATED);
+        response.setStatusCode(StatusCode.OK);
         response.setContentType(ContentType.APPLICATION_JSON);
         String content;
         try {
             if(user == null) {
+                response.setStatusCode(StatusCode.UNAUTHORIZED);
                 content = objectMapper.writeValueAsString("Error: wrong credentials!");
             }
             else {
