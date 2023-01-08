@@ -199,8 +199,6 @@ public class UserDataBaseRepository implements UserRepository {
     @Override
     public List<StatsVO> getScoreboard() {
 
-        System.out.println("AAA");
-
         String usersSortedByElo = "SELECT * FROM users ORDER BY elo ASC";
         List<StatsVO> scoreboard = new ArrayList<>();
 

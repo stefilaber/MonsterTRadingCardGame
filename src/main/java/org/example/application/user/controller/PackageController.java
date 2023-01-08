@@ -37,11 +37,29 @@ public class PackageController {
     public Response handle(Request request) {
 
         if (request.getMethod().equals(Method.POST.method)) {
-            return create(request);
+            if(request.getAuthorization() != null && sessionRepository.findByToken(request.getAuthorization()) != null) {
+                return create(request);
+            }
+            else{
+                Response response = new Response();
+                response.setStatusCode(StatusCode.UNAUTHORIZED);
+                response.setContentType(ContentType.TEXT_PLAIN);
+                response.setContent("Access token is missing or invalid");
+                return response;
+            }
         }
 
         if (request.getMethod().equals(Method.GET.method)) {
-            return readAll();
+            if(request.getAuthorization() != null && sessionRepository.findByToken(request.getAuthorization()).getUsername().equals("admin")) {
+                return readAll();
+            }
+            else{
+                Response response = new Response();
+                response.setStatusCode(StatusCode.UNAUTHORIZED);
+                response.setContentType(ContentType.TEXT_PLAIN);
+                response.setContent("Access token is missing or invalid");
+                return response;
+            }
         }
 
         Response response = new Response();

@@ -29,7 +29,7 @@ public class StatsController {
         if (request.getMethod().equals(Method.GET.method)) {
 
             String username = sessionRepository.findByToken(request.getAuthorization()).getUsername();
-            if(request.getAuthorization() != null) {
+            if(request.getAuthorization() != null && sessionRepository.findByToken(request.getAuthorization()) != null) {
                 return readStats(username);
             }
             else{

@@ -33,11 +33,21 @@ public class DeckController {
     public Response handle(Request request) {
 
         if (request.getMethod().equals(Method.PUT.method)) {
-            return update(request);
+            if(request.getAuthorization() != null && sessionRepository.findByToken(request.getAuthorization()) != null)
+                return update(request);
+            else{
+
+                Response response = new Response();
+                response.setStatusCode(StatusCode.UNAUTHORIZED);
+                response.setContentType(ContentType.TEXT_PLAIN);
+                response.setContent("Access token is missing or invalid");
+
+                return response;
+            }
         }
 
         if (request.getMethod().equals(Method.GET.method)) {
-            if(request.getAuthorization() != null)
+            if(request.getAuthorization() != null && sessionRepository.findByToken(request.getAuthorization()) != null)
                 return readDeck(sessionRepository.findByToken(request.getAuthorization()).getUsername());
             else{
 

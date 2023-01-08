@@ -34,6 +34,7 @@ public class MTCGApp implements Application {
         this.deckController = new DeckController(sessionRepository, deckRepository, cardRepository);
         this.statsController = new StatsController(userRepository, sessionRepository);
         this.scoreboardController = new ScoreboardController(userRepository, sessionRepository);
+
     }
 
     @Override

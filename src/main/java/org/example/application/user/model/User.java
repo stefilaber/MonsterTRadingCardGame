@@ -15,7 +15,7 @@ public class User {
     private String bio;
     private String image;
 
-    int elo;
+    int elo = 100;
     int wins;
     int losses;
 

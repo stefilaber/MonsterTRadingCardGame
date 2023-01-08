@@ -28,7 +28,7 @@ public class ScoreboardController {
 
         if (request.getMethod().equals(Method.GET.method)) {
 
-            if(request.getAuthorization() != null) {
+            if(request.getAuthorization() != null && sessionRepository.findByToken(request.getAuthorization()) != null) {
                 return readScoreboard();
             }
             else{

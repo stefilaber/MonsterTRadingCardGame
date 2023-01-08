@@ -37,7 +37,7 @@ public class PackageAcquireController {
 
         if (request.getMethod().equals(Method.POST.method)) {
             //String username = sessionRepository.findByToken(request.getAuthorization()).getUsername();
-            if(request.getAuthorization() != null) {
+            if(request.getAuthorization() != null && sessionRepository.findByToken(request.getAuthorization()) != null) {
                 return create(request);
             }
             else{
@@ -49,31 +49,10 @@ public class PackageAcquireController {
             }
         }
 
-        if (request.getMethod().equals(Method.GET.method)) {
-            return readAll();
-        }
-
         Response response = new Response();
         response.setStatusCode(StatusCode.METHODE_NOT_ALLOWED);
         response.setContentType(ContentType.TEXT_PLAIN);
         response.setContent(StatusCode.METHODE_NOT_ALLOWED.message);
-
-        return response;
-    }
-
-    private Response readAll() {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        Response response = new Response();
-        response.setStatusCode(StatusCode.OK);
-        response.setContentType(ContentType.APPLICATION_JSON);
-        String content;
-        try {
-            content = objectMapper.writeValueAsString(packageRepository.findAll());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        response.setContent(content);
 
         return response;
     }

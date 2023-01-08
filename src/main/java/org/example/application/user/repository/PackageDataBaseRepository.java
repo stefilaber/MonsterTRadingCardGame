@@ -61,14 +61,6 @@ public class PackageDataBaseRepository implements PackageRepository{
    }
 
     @Override
-    public Package acquire(String username) {
-
-        Package firstPackage = getFirstAvailablePackage();
-
-        return null;
-    }
-
-    @Override
     public int deleteById(int id) {
 
         String deleteSession = "DELETE FROM packages WHERE id = ?";
